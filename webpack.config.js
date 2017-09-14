@@ -3,7 +3,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: ['babel-polyfill', './src/js/main.js', './src/sass/style.scss']
+    app: ['babel-polyfill', './src/js/main.js', './src/scss/style.scss']
   },
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -22,7 +22,7 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.scss$/,
+        test: /\.(scss|sass)$/,
         loaders: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: ['css-loader', 'sass-loader?outputStyle=expanded']
