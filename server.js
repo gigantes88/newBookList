@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const dbPath = path.join(__dirname, '/data/booklist.json');
+const dbPath = path.join(__dirname, '/data/books.json');
 
 // ======================================================================
 // CONFIGURATION
