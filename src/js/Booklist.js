@@ -53,7 +53,6 @@ export default class BookList {
         </td>
       </tr>`
     }
-
     return res;
   }
 
@@ -61,8 +60,6 @@ export default class BookList {
     // booklist DB에서 데이터를 취득한 후, 렌더링 
     Ajax.get(this.url).then( data => {
       this.books = JSON.parse(data);
-      // const html = this.books.map(({ id, title, author, price, editable }) => BookList.makeHtmlTableRow({ id, title, author, price, editable })).join('');
-      // document.querySelector('tbody').innerHTML = html;
       this.bindBooksToDom();
       this.bindEvent();
     });
@@ -87,7 +84,8 @@ export default class BookList {
       if (!e.target || e.target.nodeName !== 'BUTTON') return;
 
       // 이벤트를 발생시킨 버튼이 소속된 book의 id
-      const targetId = e.target.dataset.item * 1;
+      const targetId = parseInt(e.target.dataset.item);
+
       // 이벤트를 발생시킨 버튼의 타입 (edit / save / delete)
       const { type } = e.target.dataset;
 
@@ -98,6 +96,11 @@ export default class BookList {
         }
         // save 버튼 이벤트 핸들러
         case 'save': {
+          const title  = document.querySelector('#title').value;
+          const author = document.querySelector('#author').value;
+          const price  = document.querySelector('#price').value;
+          const data = { id: Math.max(...this.books.map(({ id }) => id)), title: title, author: author, price: price, editable: false, status: '' };
+          Ajax.post(this.url, data).then( () => this.init());
           break;
         }
         // cancel 버튼 이벤트 핸들러

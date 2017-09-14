@@ -3702,7 +3702,7 @@ module.exports = Math.scale || function scale(x, inLow, inHigh, outLow, outHigh)
 
 __webpack_require__(125);
 __webpack_require__(327);
-module.exports = __webpack_require__(328);
+module.exports = __webpack_require__(330);
 
 
 /***/ }),
@@ -9021,7 +9021,7 @@ module.exports = function (regExp, replace) {
 "use strict";
 
 
-var _bookList = __webpack_require__(329);
+var _bookList = __webpack_require__(328);
 
 var _bookList2 = _interopRequireDefault(_bookList);
 
@@ -9034,12 +9034,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /***/ }),
 /* 328 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9051,7 +9045,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ajax = __webpack_require__(330);
+var _ajax = __webpack_require__(329);
 
 var _ajax2 = _interopRequireDefault(_ajax);
 
@@ -9079,8 +9073,6 @@ var BookList = function () {
       // booklist DB에서 데이터를 취득한 후, 렌더링 
       _ajax2.default.get(this.url).then(function (data) {
         _this.books = JSON.parse(data);
-        // const html = this.books.map(({ id, title, author, price, editable }) => BookList.makeHtmlTableRow({ id, title, author, price, editable })).join('');
-        // document.querySelector('tbody').innerHTML = html;
         _this.bindBooksToDom();
         _this.bindEvent();
       });
@@ -9118,7 +9110,8 @@ var BookList = function () {
         if (!e.target || e.target.nodeName !== 'BUTTON') return;
 
         // 이벤트를 발생시킨 버튼이 소속된 book의 id
-        var targetId = e.target.dataset.item * 1;
+        var targetId = parseInt(e.target.dataset.item);
+
         // 이벤트를 발생시킨 버튼의 타입 (edit / save / delete)
         var type = e.target.dataset.type;
 
@@ -9132,6 +9125,16 @@ var BookList = function () {
           // save 버튼 이벤트 핸들러
           case 'save':
             {
+              var title = document.querySelector('#title').value;
+              var author = document.querySelector('#author').value;
+              var price = document.querySelector('#price').value;
+              var data = { id: Math.max.apply(Math, _toConsumableArray(_this2.books.map(function (_ref2) {
+                  var id = _ref2.id;
+                  return id;
+                }))), title: title, author: author, price: price, editable: false, status: '' };
+              _ajax2.default.post(_this2.url, data).then(function () {
+                return _this2.init();
+              });
               break;
             }
           // cancel 버튼 이벤트 핸들러
@@ -9152,19 +9155,19 @@ var BookList = function () {
   }, {
     key: 'lastBookId',
     get: function get() {
-      return !this.books.length ? 1 : Math.max.apply(Math, _toConsumableArray(this.books.map(function (_ref2) {
-        var id = _ref2.id;
+      return !this.books.length ? 1 : Math.max.apply(Math, _toConsumableArray(this.books.map(function (_ref3) {
+        var id = _ref3.id;
         return id;
       }))) + 1;
     }
   }], [{
     key: 'makeHtmlTableRow',
-    value: function makeHtmlTableRow(_ref3) {
-      var id = _ref3.id,
-          title = _ref3.title,
-          author = _ref3.author,
-          price = _ref3.price,
-          editable = _ref3.editable;
+    value: function makeHtmlTableRow(_ref4) {
+      var id = _ref4.id,
+          title = _ref4.title,
+          author = _ref4.author,
+          price = _ref4.price,
+          editable = _ref4.editable;
 
       var res = '';
       // editable의 값이 'true'인 경우, true로 변경
@@ -9175,7 +9178,6 @@ var BookList = function () {
       } else {
         res = '<tr class="row-' + id + '">\n        <th scope="row">' + id + '</th>\n        <td>' + title + '</td>\n        <td>' + author + '</td>\n        <td>' + price + '</td>\n        <td>\n          <button type="button" class="btn fa fa-pencil" data-item="' + id + '" data-type="edit"></button>\n          <button type="button" class="btn fa fa-trash-o" data-item="' + id + '" data-type="delete"></button>\n        </td>\n      </tr>';
       }
-
       return res;
     }
   }]);
@@ -9186,7 +9188,7 @@ var BookList = function () {
 exports.default = BookList;
 
 /***/ }),
-/* 330 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9278,6 +9280,12 @@ var Ajax = function () {
 }();
 
 exports.default = Ajax;
+
+/***/ }),
+/* 330 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
