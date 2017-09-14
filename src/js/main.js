@@ -1,1 +1,6 @@
-import Booklist from './Booklist';
+import BookList from './bookList';
+
+(function() {
+  const bookList = new BookList();
+  bookList.init();
+}());

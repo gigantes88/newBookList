@@ -3702,7 +3702,7 @@ module.exports = Math.scale || function scale(x, inLow, inHigh, outLow, outHigh)
 
 __webpack_require__(125);
 __webpack_require__(327);
-module.exports = __webpack_require__(329);
+module.exports = __webpack_require__(328);
 
 
 /***/ }),
@@ -9021,14 +9021,172 @@ module.exports = function (regExp, replace) {
 "use strict";
 
 
-var _Booklist = __webpack_require__(328);
+var _bookList = __webpack_require__(329);
 
-var _Booklist2 = _interopRequireDefault(_Booklist);
+var _bookList2 = _interopRequireDefault(_bookList);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+(function () {
+  var bookList = new _bookList2.default();
+  bookList.init();
+})();
+
 /***/ }),
 /* 328 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _ajax = __webpack_require__(330);
+
+var _ajax2 = _interopRequireDefault(_ajax);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var BookList = function () {
+  function BookList() {
+    _classCallCheck(this, BookList);
+
+    this.url = '/books';
+    this.books = [];
+  }
+  // books 객체의 마지막 id에 1을 더한 값 취득
+
+
+  _createClass(BookList, [{
+    key: 'init',
+    value: function init() {
+      var _this = this;
+
+      // booklist DB에서 데이터를 취득한 후, 렌더링 
+      _ajax2.default.get(this.url).then(function (data) {
+        _this.books = JSON.parse(data);
+        // const html = this.books.map(({ id, title, author, price, editable }) => BookList.makeHtmlTableRow({ id, title, author, price, editable })).join('');
+        // document.querySelector('tbody').innerHTML = html;
+        _this.bindBooksToDom();
+        _this.bindEvent();
+      });
+    }
+
+    // html 렌더
+
+  }, {
+    key: 'bindBooksToDom',
+    value: function bindBooksToDom() {
+      document.querySelector('tbody').innerHTML = this.books.map(function (_ref) {
+        var id = _ref.id,
+            title = _ref.title,
+            author = _ref.author,
+            price = _ref.price,
+            editable = _ref.editable;
+        return BookList.makeHtmlTableRow({ id: id, title: title, author: author, price: price, editable: editable });
+      }).join('');
+    }
+  }, {
+    key: 'bindEvent',
+    value: function bindEvent() {
+      var _this2 = this;
+
+      // Add 버튼 이벤트 핸들러
+      // books 배열에 내용이 비어 있는 새로운 book 객체를 추가한다
+      document.getElementById('add').addEventListener('click', function () {
+        _this2.books.push({ id: _this2.lastBookId, editable: true });
+        _this2.bindBooksToDom();
+      });
+
+      // edit / save / delete 버튼 이벤트 핸들러
+      document.querySelector('tbody').addEventListener('click', function (e) {
+        // 이벤트 타킷이 edit / save / delete 버튼이 아니면 처리 종료
+        if (!e.target || e.target.nodeName !== 'BUTTON') return;
+
+        // 이벤트를 발생시킨 버튼이 소속된 book의 id
+        var targetId = e.target.dataset.item * 1;
+        // 이벤트를 발생시킨 버튼의 타입 (edit / save / delete)
+        var type = e.target.dataset.type;
+
+
+        switch (type) {
+          // edit 버튼 이벤트 핸들러
+          case 'edit':
+            {
+              break;
+            }
+          // save 버튼 이벤트 핸들러
+          case 'save':
+            {
+              break;
+            }
+          // cancel 버튼 이벤트 핸들러
+          case 'cancel':
+            {
+              break;
+            }
+          // delete 버튼 이벤트 핸들러
+          case 'delete':
+            {
+              break;
+            }
+          default:
+            break;
+        }
+      });
+    }
+  }, {
+    key: 'lastBookId',
+    get: function get() {
+      return !this.books.length ? 1 : Math.max.apply(Math, _toConsumableArray(this.books.map(function (_ref2) {
+        var id = _ref2.id;
+        return id;
+      }))) + 1;
+    }
+  }], [{
+    key: 'makeHtmlTableRow',
+    value: function makeHtmlTableRow(_ref3) {
+      var id = _ref3.id,
+          title = _ref3.title,
+          author = _ref3.author,
+          price = _ref3.price,
+          editable = _ref3.editable;
+
+      var res = '';
+      // editable의 값이 'true'인 경우, true로 변경
+      var isEditable = editable || editable === 'true';
+
+      if (isEditable) {
+        res = '<tr class="row-' + id + '">\n          <th scope="row">' + id + '</th>\n          <td>\n            <div class="input-group">\n              <input type="text" id="title" class="form-control" placeholder="Title">\n            </div>\n          </td>\n          <td>\n            <div class="input-group">\n              <input type="text" id="author" class="form-control" placeholder="Author">\n            </div>\n          </td>\n          <td>\n            <div class="input-group">\n              <input type="text" id="price" class="form-control" placeholder="Price">\n            </div>\n          </td>\n          <td>\n            <button type="button" class="btn fa fa-floppy-o" data-item="' + id + '" data-type="save"></button>\n            <button type="button" class="btn fa fa-ban" data-item="' + id + '" data-type="cancel"></button>\n            <button type="button" class="btn fa fa-trash-o" data-item="' + id + '" data-type="delete"></button>\n          </td>\n        </tr>';
+      } else {
+        res = '<tr class="row-' + id + '">\n        <th scope="row">' + id + '</th>\n        <td>' + title + '</td>\n        <td>' + author + '</td>\n        <td>' + price + '</td>\n        <td>\n          <button type="button" class="btn fa fa-pencil" data-item="' + id + '" data-type="edit"></button>\n          <button type="button" class="btn fa fa-trash-o" data-item="' + id + '" data-type="delete"></button>\n        </td>\n      </tr>';
+      }
+
+      return res;
+    }
+  }]);
+
+  return BookList;
+}();
+
+exports.default = BookList;
+
+/***/ }),
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9042,54 +9200,84 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Booklist = function () {
-  function Booklist() {
-    _classCallCheck(this, Booklist);
+var Ajax = function () {
+  function Ajax() {
+    _classCallCheck(this, Ajax);
   }
 
-  _createClass(Booklist, null, [{
+  _createClass(Ajax, null, [{
     key: 'get',
     value: function get(url) {
-      return new promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         var req = new XMLHttpRequest();
         req.open('GET', url);
-        req.send(null);
+        req.send();
 
         req.onreadystatechange = function () {
           if (req.readyState === XMLHttpRequest.DONE) {
-            if (req.status === 200) {
-              resolve(req.response);
-            } else {
-              reject(req.statusText);
-            }
+            if (req.status === 200) resolve(req.response);else reject(req.statusText);
+          }
+        };
+      });
+    }
+  }, {
+    key: 'post',
+    value: function post(url, data) {
+      return new Promise(function (resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.open('POST', url);
+        // 서버로 전송하는 데이터의 mime type 설정
+        req.setRequestHeader('Content-type', 'application/json');
+        req.send(JSON.stringify(data));
+        // req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        // // escaping untrusted data
+        // req.send(Object.keys(data).map(key => `${key}=${encodeURIComponent(data[key])}`).join('&'));
+
+        req.onreadystatechange = function () {
+          if (req.readyState === XMLHttpRequest.DONE) {
+            if (req.status === 200) resolve(req.response);else reject(req.statusText);
+          }
+        };
+      });
+    }
+  }, {
+    key: 'put',
+    value: function put(url, id, data) {
+      return new Promise(function (resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.open('PUT', url + '/' + id);
+        // 서버로 전송하는 데이터의 mime type 설정
+        req.setRequestHeader('Content-type', 'application/json');
+        req.send(JSON.stringify(data));
+
+        req.onreadystatechange = function () {
+          if (req.readyState === XMLHttpRequest.DONE) {
+            if (req.status === 200) resolve(req.response);else reject(req.statusText);
+          }
+        };
+      });
+    }
+  }, {
+    key: 'delete',
+    value: function _delete(url, id) {
+      return new Promise(function (resolve, reject) {
+        var req = new XMLHttpRequest();
+        req.open('DELETE', url + '/' + id);
+        req.send();
+
+        req.onreadystatechange = function () {
+          if (req.readyState === XMLHttpRequest.DONE) {
+            if (req.status === 200) resolve(req.response);else reject(req.statusText);
           }
         };
       });
     }
   }]);
 
-  return Booklist;
+  return Ajax;
 }();
 
-// // 리스트 가져오기
-// .addEventListener( () => {
-//   const userid = document.querySelector('#userid').value;
-//   Ajax.get(`/users/${userid}`)
-//   .then(res => {
-//     let users = JSON.stringify(JSON.parse(res), null, 2);
-//     contents.innerHTML = users;
-//   })
-//   .catch((e) => console.log(e));
-// });
-
-
-exports.default = Booklist;
-
-/***/ }),
-/* 329 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
+exports.default = Ajax;
 
 /***/ })
 /******/ ]);
