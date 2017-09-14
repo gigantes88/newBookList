@@ -9066,22 +9066,10 @@ var BookList = function () {
 
 
   _createClass(BookList, [{
-    key: 'init',
-    value: function init() {
-      var _this = this;
+    key: 'bindBooksToDom',
 
-      // booklist DB에서 데이터를 취득한 후, 렌더링 
-      _ajax2.default.get(this.url).then(function (data) {
-        _this.books = JSON.parse(data);
-        _this.bindBooksToDom();
-        _this.bindEvent();
-      });
-    }
 
     // html 렌더
-
-  }, {
-    key: 'bindBooksToDom',
     value: function bindBooksToDom() {
       document.querySelector('tbody').innerHTML = this.books.map(function (_ref) {
         var id = _ref.id,
@@ -9091,6 +9079,20 @@ var BookList = function () {
             editable = _ref.editable;
         return BookList.makeHtmlTableRow({ id: id, title: title, author: author, price: price, editable: editable });
       }).join('');
+      //console.log('bindbooks');
+    }
+  }, {
+    key: 'init',
+    value: function init() {
+      var _this = this;
+
+      // booklist DB에서 데이터를 취득한 후, 렌더링 
+      console.log('init');
+      _ajax2.default.get(this.url).then(function (data) {
+        _this.books = JSON.parse(data);
+        _this.bindBooksToDom();
+        _this.bindEvent();
+      });
     }
   }, {
     key: 'bindEvent',
@@ -9102,6 +9104,7 @@ var BookList = function () {
       document.getElementById('add').addEventListener('click', function () {
         _this2.books.push({ id: _this2.lastBookId, editable: true });
         _this2.bindBooksToDom();
+        console.log('bindevent');
       });
 
       // edit / save / delete 버튼 이벤트 핸들러
@@ -9131,10 +9134,11 @@ var BookList = function () {
               var data = { id: Math.max.apply(Math, _toConsumableArray(_this2.books.map(function (_ref2) {
                   var id = _ref2.id;
                   return id;
-                }))), title: title, author: author, price: price, editable: false, status: '' };
+                }))), title: title, author: author, price: price, editable: false, status: '' }; // id를 this.books에 있는 id값 중 가장 큰 값을 가져온다.
               _ajax2.default.post(_this2.url, data).then(function () {
                 return _this2.init();
               });
+              console.log('save');
               break;
             }
           // cancel 버튼 이벤트 핸들러
@@ -9145,6 +9149,9 @@ var BookList = function () {
           // delete 버튼 이벤트 핸들러
           case 'delete':
             {
+              _ajax2.default.delete(_this2.url, targetId).then(function () {
+                return _this2.init();
+              });
               break;
             }
           default:
@@ -9175,6 +9182,7 @@ var BookList = function () {
 
       if (isEditable) {
         res = '<tr class="row-' + id + '">\n          <th scope="row">' + id + '</th>\n          <td>\n            <div class="input-group">\n              <input type="text" id="title" class="form-control" placeholder="Title">\n            </div>\n          </td>\n          <td>\n            <div class="input-group">\n              <input type="text" id="author" class="form-control" placeholder="Author">\n            </div>\n          </td>\n          <td>\n            <div class="input-group">\n              <input type="text" id="price" class="form-control" placeholder="Price">\n            </div>\n          </td>\n          <td>\n            <button type="button" class="btn fa fa-floppy-o" data-item="' + id + '" data-type="save"></button>\n            <button type="button" class="btn fa fa-ban" data-item="' + id + '" data-type="cancel"></button>\n            <button type="button" class="btn fa fa-trash-o" data-item="' + id + '" data-type="delete"></button>\n          </td>\n        </tr>';
+        console.log(id);
       } else {
         res = '<tr class="row-' + id + '">\n        <th scope="row">' + id + '</th>\n        <td>' + title + '</td>\n        <td>' + author + '</td>\n        <td>' + price + '</td>\n        <td>\n          <button type="button" class="btn fa fa-pencil" data-item="' + id + '" data-type="edit"></button>\n          <button type="button" class="btn fa fa-trash-o" data-item="' + id + '" data-type="delete"></button>\n        </td>\n      </tr>';
       }

@@ -26,9 +26,9 @@
     },
     {
       "id": 4,
-      "title": "AJAX",
+      "title": "ajax",
       "author": "Park",
-      "price": "50000",
+      "price": "10000",
       "editable": false,
       "status": ""
     }

@@ -40,6 +40,7 @@ export default class BookList {
             <button type="button" class="btn fa fa-trash-o" data-item="${id}" data-type="delete"></button>
           </td>
         </tr>`
+        console.log(id);
     } else {
       res =
       `<tr class="row-${id}">
@@ -55,9 +56,16 @@ export default class BookList {
     }
     return res;
   }
+  
+  // html 렌더
+  bindBooksToDom() {
+    document.querySelector('tbody').innerHTML = this.books.map(({ id, title, author, price, editable }) => BookList.makeHtmlTableRow({ id, title, author, price, editable })).join('');
+    //console.log('bindbooks');
+  }
 
   init() {
     // booklist DB에서 데이터를 취득한 후, 렌더링 
+    console.log('init');
     Ajax.get(this.url).then( data => {
       this.books = JSON.parse(data);
       this.bindBooksToDom();
@@ -65,10 +73,6 @@ export default class BookList {
     });
   }
 
-  // html 렌더
-  bindBooksToDom() {
-    document.querySelector('tbody').innerHTML = this.books.map(({ id, title, author, price, editable }) => BookList.makeHtmlTableRow({ id, title, author, price, editable })).join('');
-  }
 
   bindEvent() {
     // Add 버튼 이벤트 핸들러
@@ -76,6 +80,7 @@ export default class BookList {
     document.getElementById('add').addEventListener('click', () => {
       this.books.push({ id: this.lastBookId, editable: true });
       this.bindBooksToDom();
+      console.log('bindevent');
     });
 
     // edit / save / delete 버튼 이벤트 핸들러
@@ -99,8 +104,9 @@ export default class BookList {
           const title  = document.querySelector('#title').value;
           const author = document.querySelector('#author').value;
           const price  = document.querySelector('#price').value;
-          const data = { id: Math.max(...this.books.map(({ id }) => id)), title: title, author: author, price: price, editable: false, status: '' };
-          Ajax.post(this.url, data).then( () => this.init());
+          const data   = { id: Math.max(...this.books.map(({ id }) => id)), title: title, author: author, price: price, editable: false, status: '' };  // id를 this.books에 있는 id값 중 가장 큰 값을 가져온다.
+          Ajax.post(this.url, data).then( () => this.init() );
+          console.log('save');
           break;
         }
         // cancel 버튼 이벤트 핸들러
@@ -109,6 +115,7 @@ export default class BookList {
         }
         // delete 버튼 이벤트 핸들러
         case 'delete': {
+          Ajax.delete(this.url, targetId).then( () => this.init() );
           break;
         }
         default:
